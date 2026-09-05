@@ -15,9 +15,9 @@ architecture Behavioral of DecoderParallel is
     signal not_A: std_logic_vector(3 downto 0);
     signal buf_A: std_logic_vector(3 downto 0);
 begin
-    E <= not(E1) and not(E2);
+    E <= not E1 and not E2;
     
-    not_A <= not(A);
+    not_A <= not A;
     
     buf_A <= not(not_A);
     
