@@ -10,30 +10,33 @@ entity DecoderSerial is
     );
 end DecoderSerial;
 
-architecture Behavioral of DecoderSerial is
+architecture serial of DecoderSerial is
 begin
     process(A, E1, E2)
-        variable E: std_logic;
     begin
-        E := not E1 and not E2;
+    
+        Y <= (others => '1');
         
-        if E = '1' then
-            Y(0) <= not(not A(0) and not A(1) and not A(2) and not A(3));
-            Y(1) <= not(A(0) and not A(1) and not A(2) and not A(3));
-            Y(2) <= not(not A(0) and A(1) and not A(2) and not A(3));
-            Y(3) <= not(A(0) and A(1) and not A(2) and not A(3));
-            Y(4) <= not(not A(0) and not A(1) and A(2) and not A(3));
-            Y(5) <= not(A(0) and not A(1) and A(2) and not A(3));
-            Y(6) <= not(not A(0) and A(1) and A(2) and not A(3));
-            Y(7) <= not(A(0) and A(1) and A(2) and not A(3));
-            Y(8) <= not(not A(0) and not A(1) and not A(2) and A(3));
-            Y(9) <= not(A(0) and not A(1) and not A(2) and A(3));
-            Y(10) <= not(not A(0) and A(1) and not A(2) and A(3));
-            Y(11) <= not(A(0) and A(1) and not A(2) and A(3));
-            Y(12) <= not(not A(0) and not A(1) and A(2) and A(3));
-            Y(13) <= not(A(0) and not A(1) and A(2) and A(3));
-            Y(14) <= not(not A(0) and A(1) and A(2) and A(3));
-            Y(15) <= not(A(0) and A(1) and A(2) and A(3));
+        if E1 = '0' and E2 = '0' then
+            case A is
+                when "0000" => Y(0) <= '1';
+                when "0001" => Y(1) <= '1';
+                when "0010" => Y(2) <= '1';
+                when "0011" => Y(3) <= '1';
+                when "0100" => Y(4) <= '1';
+                when "0101" => Y(5) <= '1';
+                when "0110" => Y(6) <= '1';
+                when "0111" => Y(7) <= '1';
+                when "1000" => Y(8) <= '1';
+                when "1001" => Y(9) <= '1';
+                when "1010" => Y(10) <= '1';
+                when "1011" => Y(11) <= '1';
+                when "1100" => Y(12) <= '1';
+                when "1101" => Y(13) <= '1';
+                when "1110" => Y(14) <= '1';
+                when "1111" => Y(15) <= '1';
+                when others => Y <= (others => '1');
+            end case;
         end if;
     end process;
-end Behavioral;
+end serial;

@@ -10,7 +10,7 @@ entity DecoderParallel is
   );
 end DecoderParallel;
 
-architecture Behavioral of DecoderParallel is
+architecture parallel of DecoderParallel is
     signal E: std_logic;
     signal not_A: std_logic_vector(3 downto 0);
     signal buf_A: std_logic_vector(3 downto 0);
@@ -37,4 +37,4 @@ begin
     Y(13) <= not(buf_A(0) and not_A(1) and buf_A(2) and buf_A(3) and E);
     Y(14) <= not(not_A(0) and buf_A(1) and buf_A(2) and buf_A(3) and E);
     Y(15) <= not(buf_A(0) and buf_A(1) and buf_A(2) and buf_A(3) and E);
-end Behavioral;
+end parallel;
