@@ -18,9 +18,9 @@ architecture Behavioral of JkTrigger is
 begin
     process(clk, R, S)
     begin
-        if R = '1' then
+        if R = '0' then
             Q_int <= '0';
-        elsif S = '1' then
+        elsif S = '0' then
             Q_int <= '1';
         elsif clk'event and clk = '1' then
             if J = '0' and K = '0' then
