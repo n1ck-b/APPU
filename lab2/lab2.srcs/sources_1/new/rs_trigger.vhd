@@ -6,6 +6,7 @@ entity RsTrigger is
         clk: in std_logic;
         R: in std_logic;
         S: in std_logic;
+        CLR: in std_logic;
         Q: out std_logic;
         not_Q: out std_logic
     );
@@ -14,6 +15,7 @@ end RsTrigger;
 architecture Structural of RsTrigger is
 
     signal clk_jk: std_logic;
+    signal not_clr: std_logic;
 
     component JkTrigger
         port(
@@ -30,6 +32,7 @@ architecture Structural of RsTrigger is
 begin
 
     clk_jk <= not clk;
+    not_clr <= not CLR;
 
     trigger: JkTrigger
         port map(
@@ -39,7 +42,7 @@ begin
             Q => Q,
             not_Q => not_Q,
             S => '0',
-            R => '0'
+            R => not_clr
         );
     
 end Structural;
