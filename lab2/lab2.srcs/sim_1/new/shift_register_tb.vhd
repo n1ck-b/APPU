@@ -64,7 +64,7 @@ begin
         clear <= '1';
         wait for 20ns;
         
-        -- gараллельная загрузка 1010, OC = 0
+        -- параллельная загрузка 1010, OC = 0
         output_control <= '0';
         load_shift <= '1';
         A <= '1'; 
@@ -73,7 +73,7 @@ begin
         D <= '0';
         wait until falling_edge(clk);
         
-        -- gараллельная загрузка 1101, OC = 1
+        -- параллельная загрузка 1101, OC = 1
         wait until clk = '1';
         output_control <= '1';
         A <= '1'; 
@@ -104,16 +104,6 @@ begin
         wait until clk = '1';
         serial <= '0';
         wait until falling_edge(clk);
-        
-        -- хранение: LOAD = 1
-        wait until clk = '1';
-        output_control <= '0';
-        load_shift <= '1';
-        A <= '0'; 
-        B <= '0'; 
-        C <= '0'; 
-        D <= '0';
-        wait for 10ns;
         
         -- параллельная загрузка 1111, OC = 0
         wait until clk = '1';
