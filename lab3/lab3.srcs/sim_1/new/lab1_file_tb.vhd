@@ -83,7 +83,7 @@ begin
             wait for 10 ns;
             
             if Y /= Y_expected then
-                report "Error in line :" &
+                report "Error in line :" & LF &
                        " E1 = " & std_logic'image(E1) & 
                        " E2 = " & std_logic'image(E2) & 
                        " A = " & to_str(A) &
