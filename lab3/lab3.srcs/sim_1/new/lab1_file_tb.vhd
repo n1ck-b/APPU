@@ -57,6 +57,8 @@ begin
         variable A_v: std_logic_vector(3 downto 0);
         variable Y_expected: std_logic_vector(15 downto 0);
         variable file_status: file_open_status;
+        variable is_correct: boolean;
+        variable line_num: integer := 0;
     begin
     
         file_open(file_status, test_file, "test_file_decoder.txt", read_mode);
@@ -68,13 +70,20 @@ begin
         report "Simulation started" & LF severity note;
         
         while not endfile(test_file) loop
+            line_num := line_num + 1;
             readline(test_file, current_line);
             
-            read(current_line, E1_v);
-            read(current_line, E2_v);
-            read(current_line, A_v);
-            read(current_line, Y_expected);
+            read(current_line, E1_v, is_correct);
+            if is_correct then read(current_line, E2_v, is_correct); end if;
+            if is_correct then read(current_line, A_v, is_correct); end if;
+            if is_correct then read(current_line, Y_expected, is_correct); end if;
             
+            if not is_correct then
+                report "Corrupted data in line " & integer'image(line_num) & 
+                       " Invalid character encountered. Skipping line." & LF
+                    severity error;
+                next;
+            end if;
             
             E1 <= E1_v;
             E2 <= E2_v;
@@ -83,12 +92,12 @@ begin
             wait for 10 ns;
             
             if Y /= Y_expected then
-                report "Error in line :" & LF &
+                report "Error in line :" & integer'image(line_num) & LF &
                        " E1 = " & std_logic'image(E1) & 
                        " E2 = " & std_logic'image(E2) & 
                        " A = " & to_str(A) &
                        " Expected Y = " & to_str(Y_expected) & 
-                       " Got Y = " & to_str(Y)
+                       " Got Y = " & to_str(Y) & LF
                     severity error;
             end if;
             

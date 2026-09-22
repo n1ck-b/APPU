@@ -65,6 +65,8 @@ begin
         
         variable err_cnt : integer := 0;
         variable file_status: file_open_status;
+        variable is_correct : boolean := true;
+        variable line_num: integer := 0;
     begin
         wait for 20 ns;
 
@@ -77,20 +79,28 @@ begin
         while not endfile(test_file) loop
             readline(test_file, current_line);
 
-            read(current_line, clear_v);
-            read(current_line, load_shift_v);
-            read(current_line, output_control_v);
-            read(current_line, serial_v);
-            read(current_line, A_v);
-            read(current_line, B_v);
-            read(current_line, C_v);
-            read(current_line, D_v);
+            read(current_line, clear_v, is_correct);
+            if is_correct then read(current_line, load_shift_v, is_correct); end if;
+            if is_correct then read(current_line, output_control_v, is_correct); end if;
+            if is_correct then read(current_line, serial_v, is_correct); end if;
+            if is_correct then read(current_line, A_v, is_correct); end if;
+            if is_correct then read(current_line, B_v, is_correct); end if;
+            if is_correct then read(current_line, C_v, is_correct); end if;
+            if is_correct then read(current_line, D_v, is_correct); end if;
+            
+            if is_correct then read(current_line, exp_QA, is_correct); end if;
+            if is_correct then read(current_line, exp_QB, is_correct); end if;
+            if is_correct then read(current_line, exp_QC, is_correct); end if;
+            if is_correct then read(current_line, exp_QD, is_correct); end if;
+            if is_correct then read(current_line, exp_QD_cascade, is_correct); end if;
 
-            read(current_line, exp_QA);
-            read(current_line, exp_QB);
-            read(current_line, exp_QC);
-            read(current_line, exp_QD);
-            read(current_line, exp_QD_cascade);
+            if not is_correct then
+                err_cnt := err_cnt + 1;
+                report "Corrupted data in line " & integer'image(line_num) & 
+                       " Invalid character encountered. Skipping line." & LF
+                    severity error;
+                next;
+            end if;
 
             wait until clk = '1';
             clear <= clear_v;
@@ -110,7 +120,7 @@ begin
                (QD_cascade /= exp_QD_cascade) then
                
                 err_cnt := err_cnt + 1;
-                report "ERROR at step :" & LF &
+                report "ERROR at step :" & integer'image(line_num) & LF &
                        "Inputs:   clear=" & std_logic'image(clear) & 
                                " load_shift=" & std_logic'image(load_shift) & 
                                " output_control=" & std_logic'image(output_control) & 
@@ -128,7 +138,7 @@ begin
                                " QB=" & std_logic'image(QB) & 
                                " QC=" & std_logic'image(QC) & 
                                " QD=" & std_logic'image(QD) & 
-                               " QD cascade=" & std_logic'image(QD_cascade)
+                               " QD cascade=" & std_logic'image(QD_cascade) & LF
                     severity error;
             end if;
 
