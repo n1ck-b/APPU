@@ -62,7 +62,7 @@ begin
         file_open(file_status, test_file, "test_file_decoder.txt", read_mode);
         
         assert file_status = open_ok
-            report "FILE NOT FOUND! Check path to test_file.txt"
+            report "FILE NOT FOUND! Check path to test_file_decoder.txt"
             severity failure;
             
         report "Simulation started" & LF severity note;
