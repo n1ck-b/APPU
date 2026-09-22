@@ -32,7 +32,6 @@ architecture Structural of RsTrigger is
 begin
 
     clk_jk <= not clk;
---    not_clr <= not CLR;
 
     trigger: JkTrigger
         port map(
