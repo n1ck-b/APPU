@@ -27,81 +27,37 @@ architecture Structural of ShiftRegister is
         );
     end component;
     
-    signal reg_A_in: std_logic;
-    signal reg_A_out: std_logic;
-    signal reg_A_S_in: std_logic;
+    signal parallel_in : std_logic_vector(0 to 3);
     
-    signal reg_B_in: std_logic;
-    signal reg_B_out: std_logic;
-    signal reg_B_S_in: std_logic;
+    signal shift_chain : std_logic_vector(0 to 4);
     
-    signal reg_C_in: std_logic;
-    signal reg_C_out: std_logic;
-    signal reg_C_S_in: std_logic;
-    
-    signal reg_D_in: std_logic;
-    signal reg_D_out: std_logic;
-    signal reg_D_S_in: std_logic;
-
+    signal reg_in      : std_logic_vector(0 to 3);
+    signal reg_S_in    : std_logic_vector(0 to 3);
 begin
-    reg_A_in <= (A and load_shift) nor (not(load_shift) and serial);
-    reg_A_S_in <= not reg_A_in;
-    QA <= reg_A_out when output_control = '0' else 'Z';
+    parallel_in <= (A, B, C, D);
     
-    reg_A: RsTrigger
-        port map(
-            S => reg_A_S_in,
-            R => reg_A_in,
-            clk => clk,
-            CLR => clear,
-            Q => reg_A_out,
-            not_Q => open
-        );
-        
-        
-    reg_B_in <= (B and load_shift) nor (not(load_shift) and reg_A_out);
-    reg_B_S_in <= not reg_B_in;
-    QB <= reg_B_out when output_control = '0' else 'Z';
+    shift_chain(0) <= serial;
+
+    GEN_REG: for i in 0 to 3 generate
+    begin
+        reg_in(i)   <= (parallel_in(i) and load_shift) nor (not(load_shift) and shift_chain(i));
+        reg_S_in(i) <= not reg_in(i);
+        reg_inst: RsTrigger
+            port map(
+                clk   => clk,
+                R     => reg_in(i),
+                S     => reg_S_in(i),
+                CLR   => clear,
+                Q     => shift_chain(i + 1),
+                not_Q => open
+            );
+    end generate GEN_REG;
     
-    reg_B: RsTrigger
-        port map(
-            S => reg_B_S_in,
-            R => reg_B_in,
-            clk => clk,
-            CLR => clear,
-            Q => reg_B_out,
-            not_Q => open
-        );
-        
-        
-    reg_C_in <= (C and load_shift) nor (not(load_shift) and reg_B_out);
-    reg_C_S_in <= not reg_C_in;
-    QC <= reg_C_out when output_control = '0' else 'Z';
+    QA <= shift_chain(1) when output_control = '0' else 'Z';
+    QB <= shift_chain(2) when output_control = '0' else 'Z';
+    QC <= shift_chain(3) when output_control = '0' else 'Z';
+    QD <= shift_chain(4) when output_control = '0' else 'Z';
     
-    reg_C: RsTrigger
-        port map(
-            S => reg_C_S_in,
-            R => reg_C_in,
-            clk => clk,
-            CLR => clear,
-            Q => reg_C_out,
-            not_Q => open
-        );
-        
-        
-    reg_D_in <= (D and load_shift) nor (not(load_shift) and reg_C_out);
-    reg_D_S_in <= not reg_D_in;
-    QD <= reg_D_out when output_control = '0' else 'Z';
-    QD_cascade <= reg_D_out;
-    
-    reg_D: RsTrigger
-        port map(
-            S => reg_D_S_in,
-            R => reg_D_in,
-            clk => clk,
-            CLR => clear,
-            Q => reg_D_out,
-            not_Q => open
-        );
+    QD_cascade <= shift_chain(4);
      
 end Structural;

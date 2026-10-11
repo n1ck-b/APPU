@@ -15,7 +15,6 @@ end RsTrigger;
 architecture Structural of RsTrigger is
 
     signal clk_jk: std_logic;
-    signal not_clr: std_logic;
 
     component JkTrigger
         port(
