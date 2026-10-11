@@ -72,7 +72,7 @@ begin
     -- Делитель частоты
     divider_inst : clk_div
         generic map (
-            DIVIDER_LIMIT => 4
+            DIVIDER_LIMIT => 100000000
         )
         port map (
             clk_in  => clk_200mhz,
