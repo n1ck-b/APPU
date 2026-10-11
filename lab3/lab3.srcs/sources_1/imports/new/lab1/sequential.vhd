@@ -17,7 +17,7 @@ begin
     
         Y <= (others => '1');
         
-        if (E1 = '0' and E2 = '0') then
+        if (E1 = '0' and E2 = '1') then
             case A is
                 when "0000" => Y(0) <= '0';
                 when "0001" => Y(1) <= '0';
